@@ -7,7 +7,7 @@ version() {
 
 usage() {
   version
-  echo "Usage: bats [-c] [-p | -t] <test> [<test> ...]"
+  echo "Usage: bats [-c] [-p | -t | --log] <test> [<test> ...]"
 }
 
 help() {
@@ -18,6 +18,7 @@ help() {
   echo
   echo "  -c, --count    Count the number of test cases without running any tests"
   echo "  -h, --help     Display this help message"
+  echo "      --log      Combine output and test logs into path defined by \$BATS_LOG (default: /tmp/bats.log)"
   echo "  -p, --pretty   Show results in pretty format (default for terminals)"
   echo "  -t, --tap      Show results in TAP format"
   echo "  -v, --version  Display the version number"
@@ -124,6 +125,12 @@ if [[ "${#options[@]}" -ne '0' ]]; then
       ;;
     "p" | "pretty" )
       pretty="1"
+      ;;
+    "log" )
+      if [[ -z "$BATS_LOG" ]]; then
+        export BATS_LOG="/tmp/bats.log"
+      fi
+      touch "$BATS_LOG"
       ;;
     * )
       usage >&2
